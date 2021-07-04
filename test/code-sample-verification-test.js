@@ -26,7 +26,7 @@ describe('the code sample', function () {
       studentGrade: '8',
     };
 
-    await writeData.handler(schoolStudent, db);
+    await writeData.handler(schoolStudent);
 
     // const query = {
     //   schoolId: schoolId,
