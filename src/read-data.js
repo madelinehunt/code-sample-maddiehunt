@@ -1,13 +1,11 @@
 const AWS = require('aws-sdk');
+const config = require('../config/local-config');
+const chai = require('chai');
+const assert = chai.assert;
 
-const dynamodb = new AWS.DynamoDB.DocumentClient({
-  apiVersion: '2012-08-10',
-  endpoint: new AWS.Endpoint('http://localhost:8000'),
-  region: 'us-west-2',
-  // what could you do to improve performance?
-});
+const dynamodb = new AWS.DynamoDB.DocumentClient(config.db);
 
-const tableName = 'SchoolStudents';
+const tableName = config.tableName;
 const studentLastNameGsiName = 'studentLastNameGsi';
 
 /**
@@ -26,4 +24,6 @@ exports.handler = (event) => {
 
   // TODO (extra credit) limit the amount of records returned in the query to 5 and then implement the logic to return all
   //  pages of records found by the query (uncomment the test which exercises this functionality)
+
+
 };

@@ -85,3 +85,5 @@ exports.buildGlobalSecondaryIndex = (indexName, keySchema) => {
 const deleteTable = (tableName) => {
   return db.deleteTable({TableName: tableName}).promise();
 };
+
+exports.db = db;
