@@ -33,14 +33,14 @@ describe('the code sample', function () {
       studentId: studentId,
     };
     const queryResult = await readData.handler(query);
-    
+
     assert.isTrue(Array.isArray(queryResult), 'Expected queryResult to be of type Array');
     assert.equal(queryResult.length, 1, 'Expected to find one result');
     assert.deepEqual(queryResult[0], schoolStudent, 'Expected the query result to match what we saved');
   });
 
   // TODO (extra credit) enable this test if you implement the GSI query in src/read-data.js
-  it.skip('(extra credit) can query for SchoolStudent records by studentLastName', async function () {
+  it('(extra credit) can query for SchoolStudent records by studentLastName', async function () {
     const schoolId = uuid();
     const studentId = uuid();
 
@@ -66,10 +66,10 @@ describe('the code sample', function () {
   });
 
   // TODO uncomment this test if you implement retrieval of multiple pages of data
-  it.skip('returns all pages of data', async function () {
+  it('returns all pages of data', async function () {
     let createdRecords = 0;
     const schoolId = uuid();
-    while (createdRecords++ < 10) {
+    while (createdRecords++ < 23) {
       await writeData.handler({
         schoolId: schoolId,
         schoolName: 'NWEA Test School ' + createdRecords,
@@ -85,7 +85,7 @@ describe('the code sample', function () {
     };
     const queryResult = await readData.handler(query);
     assert.isTrue(Array.isArray(queryResult), 'Expected queryResult to be of type Array');
-    assert.equal(queryResult.length, 10, 'Expected to find ten results');
+    assert.equal(queryResult.length, 23, 'Expected to find ten results');
   });
 
 

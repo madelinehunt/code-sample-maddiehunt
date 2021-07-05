@@ -28,8 +28,8 @@ const validate = (event) => {
 
 /**
  * The entry point into the lambda. Validates the event, then writes it to the
- * DB asynchronously. Returns a promise to fulfill the `await` keyword in
- * the 'saves data to DynamoDB and then it can be read' test.
+ * DB asynchronously. Returns a Promise to fulfill the `await` keywords in
+ * the tests.
  *
  * @param {Object} event
  * @param {string} event.schoolId
@@ -53,7 +53,7 @@ exports.handler = (event) => {
         console.error(err);
         reject(err);
       } else {
-        console.log("Succeeded writing");
+        // console.log("Succeeded writing");
         resolve(data);
       }
     });
