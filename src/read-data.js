@@ -98,7 +98,7 @@ exports.handler = (event) => {
         if (data.LastEvaluatedKey !== undefined) {
           results = results.concat(data.Items);
           query_params.ExclusiveStartKey = data.LastEvaluatedKey;
-          // paginate results by calling query_callback recursively
+          // collate paginated results by calling query_callback recursively
           doc_client.query(query_params, query_callback)
         } else {
           results = results.concat(data.Items);
