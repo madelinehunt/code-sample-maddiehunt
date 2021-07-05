@@ -1,10 +1,12 @@
-# NWEA's Platform Team code sample test
+# NWEA code sample test, Nathan Hunt
 
-This test attempts to simulate, in a very basic manner, the development work required to implement lambdas that use 
-the DynamoDB database to save and read data.  
+Forked from https://github.com/nwea-platform-team/code-sample-nodejs, code challenge completed by Nathan Hunt on 5 July 2021.
 
-The code sample test uses *DynamoDB local* to run a local instance of the DynamoDB database:
-https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html 
+## Files added:
+- ````config/config.js```` to store AWS configuration parameters.
+
+## Tests added:
+- New test based on the extra credit pagination test. This test tries out pagination with a large amount of records (1000), with a page size of 20.
 
 ## Prerequisites
 - node version 10.x installed
@@ -12,11 +14,4 @@ https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.h
 
 ## Steps to complete
 - Run ````npm install````
-- Implement the *TODOs* in the ````src/write-data.js```` and ````src/read-data.js```` files, if you have time try to 
-    implement the *extra credit TODOs* 
-- Test your implementation using the ````npm test```` command and ensure all of the tests pass 
-    - If you've attempted the *"query using GSI" extra credit TODO* you will need to enable the skipped test
-- Add any additional tests you want! 
-    
-# Helpful references
-- https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html
+- Run ````npm test````
