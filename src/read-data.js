@@ -14,45 +14,14 @@ const studentLastNameGsiName = 'studentLastNameGsi';
  * validation.
  */
 const validate = (event, validation_criteria) => {
-  assert.exists(event, 'event is undefined!');
-  assert.typeOf(event, 'object', 'Event is an object!');
+  assert.exists(event, 'event is required!');
+  assert.typeOf(event, 'object', 'Event must be an object!');
 
   Object.entries(validation_criteria).forEach(entry => {
     let [key, value] = entry;
     assert.exists(event[key], `${key} is required!`);
-    assert.typeOf(event[key], value, `${key} must be a ${value}!`);
+    assert.typeOf(event[key], value, `${key} must be of type: ${value}!`);
   });
-};
-
-const paginator = async (query_result, query_params) => {
-  const results = {};
-  results['Items'] = [];
-  results.Items = results.Items.concat(query_result.Items);
-
-  query_params.ExclusiveStartKey = query_result.LastEvaluatedKey;
-
-  return new Promise((resolve, reject) => {
-    let req = doc_client.query(query_params, (err, data) => {
-      if (err) {
-        console.error(err);
-        reject(err);
-      } else {
-        if (data.LastEvaluatedKey !== undefined) {
-          // if there are more pages to query for, recursively call paginator()
-          let new_page = paginator(data, query_params)
-            .then((new_page) => {
-              results.Items = results.Items.concat(new_page.Items);
-              resolve(results);
-            });
-        } else {
-          results.Items = results.Items.concat(data.Items);
-          resolve(results);
-        }
-      }
-    });
-  });
-
-
 };
 
 /**
@@ -88,7 +57,7 @@ exports.handler = (event) => {
     });
     query_params = {
       TableName: config.tableName,
-      IndexName: 'studentLastNameGsi',
+      IndexName: studentLastNameGsiName,
       KeyConditionExpression: 'studentLastName = :pkey_gsi',
       ExpressionAttributeValues: {
         ':pkey_gsi': event.studentLastName
@@ -111,20 +80,28 @@ exports.handler = (event) => {
   }
 
   return new Promise((resolve, reject) => {
-    let req = doc_client.query(query_params, (err, data) => {
+
+    // defining results array to resolve with. This will be in-scope for all
+    // function calls within this Promise
+    let results = [];
+
+    let req = doc_client.query(query_params, function query_callback(err, data)  {
       if (err) {
         console.error(err);
         reject(err);
       } else {
+        // the presence of LastEvaluatedKey signifies an incomplete (paginated) result
         if (data.LastEvaluatedKey !== undefined) {
-          data = paginator(data, query_params)
-            .then((all_pages) => resolve(all_pages.Items));
+          results = results.concat(data.Items);
+          query_params.ExclusiveStartKey = data.LastEvaluatedKey;
+          // paginate results by calling query_callback recursively
+          doc_client.query(query_params, query_callback)
         } else {
-          resolve(data.Items);
+          results = results.concat(data.Items);
+          resolve(results);
         }
       }
     });
   });
 
-  return promise;
 };

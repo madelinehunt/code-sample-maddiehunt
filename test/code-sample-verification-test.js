@@ -69,7 +69,7 @@ describe('the code sample', function () {
   it('returns all pages of data', async function () {
     let createdRecords = 0;
     const schoolId = uuid();
-    while (createdRecords++ < 23) {
+    while (createdRecords++ < 10) {
       await writeData.handler({
         schoolId: schoolId,
         schoolName: 'NWEA Test School ' + createdRecords,
@@ -85,7 +85,7 @@ describe('the code sample', function () {
     };
     const queryResult = await readData.handler(query);
     assert.isTrue(Array.isArray(queryResult), 'Expected queryResult to be of type Array');
-    assert.equal(queryResult.length, 23, 'Expected to find ten results');
+    assert.equal(queryResult.length, 10, 'Expected to find ten results');
   });
 
 
