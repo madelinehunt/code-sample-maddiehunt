@@ -6,7 +6,30 @@ const assert = chai.assert;
 const doc_client = new AWS.DynamoDB.DocumentClient(config.db);
 
 /**
- * The entry point into the lambda
+ * Validation function for event--i.e. the student object to be saved to the DB.
+ * Right now only checks for existence of each attribute, as well as  checking
+ * each one's type. Performs no further validation.
+ */
+const validate = (event) => {
+  assert.exists(event, 'event is undefined!');
+  assert.exists(event.schoolId, 'school ID is required!');
+  assert.exists(event.studentId, 'studentId is required!');
+  assert.exists(event.studentFirstName, 'studentFirstName is required!');
+  assert.exists(event.studentLastName, 'studentLastName is required!');
+  assert.exists(event.studentGrade, 'studentGrade is required!');
+
+  assert.typeOf(event, 'object', 'Event is an object!');
+  assert.typeOf(event.schoolId, 'string', 'school ID must be a string!');
+  assert.typeOf(event.studentId, 'string', 'studentId must be a string!');
+  assert.typeOf(event.studentFirstName, 'string', 'studentFirstName must be a string!');
+  assert.typeOf(event.studentLastName, 'string', 'studentLastName must be a string!');
+  assert.typeOf(event.studentGrade, 'string', 'studentGrade must be a string!');
+}
+
+/**
+ * The entry point into the lambda. Validates the event, then writes it to the
+ * DB asynchronously. Returns a promise to fulfill the `await` keyword in
+ * the 'saves data to DynamoDB and then it can be read' test.
  *
  * @param {Object} event
  * @param {string} event.schoolId
@@ -16,76 +39,23 @@ const doc_client = new AWS.DynamoDB.DocumentClient(config.db);
  * @param {string} event.studentLastName
  * @param {string} event.studentGrade
  */
-const validate = (event) =>{
-  assert.exists(event, 'event is undefined!');
-  assert.exists(event.schoolId, 'school ID is required!');
-  assert.exists(event.studentId, 'studentId is required!');
-  assert.exists(event.studentFirstName, 'studentFirstName is required!');
-  assert.exists(event.studentLastName, 'studentLastName is required!');
-  assert.exists(event.studentGrade, 'studentGrade is required!');
-}
-
 exports.handler = (event) => {
   validate(event);
 
-  var record = {
+  let record = {
     TableName: config.tableName,
     Item: event,
   };
 
-  // let fetch = async () => {
-  //   let req = await doc_client.put(record, (err, data) => {
-  //     if (err) {
-  //       console.error("error");
-  //       console.error(err)
-  //     } else {
-  //       // console.log("Succeeded");
-  //     }
-  //   });
-  //   return req;
-  // };
-  //
-  // let response = fetch().then((req)=>{
-  //   // console.log(req);
-  // });
-  //
-  // return new Promise((resolve, reject) => {
-  //   setTimeout(()=>{resolve("OK")}, 30)
-  // });
-  const promise =  new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     let req = doc_client.put(record, (err, data) => {
       if (err) {
-        console.error("error");
-        console.error(err)
+        console.error(err);
         reject(err);
       } else {
-        console.log("Succeeded");
+        console.log("Succeeded writing");
         resolve(data);
       }
     });
   });
-  return promise;
-};
-
-exports.async_handler = async (event) => {
-  validate(event);
-
-  var record = {
-    TableName: config.tableName,
-    Item: event,
-  };
-
-  const promise =  new Promise(async (resolve, reject) => {
-    let req = await doc_client.put(record, (err, data) => {
-      if (err) {
-        console.error("error");
-        console.error(err)
-        reject(err);
-      } else {
-        console.log("Succeeded");
-        resolve(data);
-      }
-    });
-  });
-  return promise;
 };
