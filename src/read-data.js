@@ -66,7 +66,7 @@ exports.handler = (event) => {
         ':pkey_gsi': event.studentLastName
       }
     };
-  } else if (event.schoolId !== undefined && event.studentId === undefined) {
+  } else if (event.schoolId !== undefined && event.studentGrade === undefined) {
     // 'returns all pages of data'
     validate(event, {
       'schoolId': 'string'
@@ -78,6 +78,19 @@ exports.handler = (event) => {
         ':pkey': event.schoolId
       },
       Limit: '5',
+    };
+  } else if (event.studentGrade !== undefined) {
+    // 'high volume of records with pagination'
+    validate(event, {
+      'schoolId': 'string'
+    });
+    query_params = {
+      TableName: config.tableName,
+      KeyConditionExpression: 'schoolId = :pkey',
+      ExpressionAttributeValues: {
+        ':pkey': event.schoolId
+      },
+      Limit: '20',
     };
   } else {
     console.error('The query is missing parameters expected in this scenario');

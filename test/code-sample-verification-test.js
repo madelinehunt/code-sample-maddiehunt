@@ -37,7 +37,7 @@ describe('the code sample', function () {
     // assert.deepEqual(queryResult[0], schoolStudent, 'Expected the query result to match what we saved');
   });
 
-  // TODO (extra credit) enable this test if you implement the GSI query in src/read-data.js
+  // (extra credit) enable this test if you implement the GSI query in src/read-data.js
   it('(extra credit) can query for SchoolStudent records by studentLastName', async function () {
     const schoolId = uuid();
     const studentId = uuid();
@@ -63,7 +63,7 @@ describe('the code sample', function () {
     assert.deepEqual(queryResult[0], schoolStudent, 'Expected the query result to match what we saved');
   });
 
-  // TODO uncomment this test if you implement retrieval of multiple pages of data
+  // uncomment this test if you implement retrieval of multiple pages of data
   it('returns all pages of data', async function () {
     let createdRecords = 0;
     const schoolId = uuid();
@@ -86,6 +86,31 @@ describe('the code sample', function () {
     assert.equal(queryResult.length, 10, 'Expected to find ten results');
   });
 
+  // Nathan Hunt added: extra test for pagination and a high volume of records
+  it('high volume of records with pagination', async function () {
+    const n_records = 1000;
+    let createdRecords = 0;
+    const schoolId = uuid();
+    const grade = '7';
+    while (createdRecords++ < n_records) {
+      await writeData.handler({
+        schoolId: schoolId,
+        schoolName: 'NWEA Test School ' + createdRecords,
+        studentId: uuid(),
+        studentFirstName: 'Julian',
+        studentLastName: 'Julian the ' + createdRecords,
+        studentGrade: '3',
+      });
+    }
+
+    const query = {
+      schoolId: schoolId,
+      studentGrade: grade
+    };
+    const queryResult = await readData.handler(query);
+    assert.isTrue(Array.isArray(queryResult), 'Expected queryResult to be of type Array');
+    assert.equal(queryResult.length, n_records, `Expected to find ${n_records} results`);
+  });
 
   // This section starts the local DynamoDB database
   before(async function () {
