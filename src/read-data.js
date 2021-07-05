@@ -26,8 +26,9 @@ const validate = (event, validation_criteria) => {
 
 /**
  * The entry point into the lambda. Validates the event, then uses it to query
- * the DB asynchronously. Returns a Promise to fulfill the `await` keyword in
- * the 'saves data to DynamoDB and then it can be read' test.
+ * the DB asynchronously. The different tests require different query
+ * parameters, which are crudely delineated with if/else branches.
+ * Returns a Promise to fulfill the `await` keywords in the tests.
  *
  * @param {Object} event
  * @param {string} event.schoolId
@@ -39,6 +40,7 @@ exports.handler = (event) => {
   let query_params;
 
   if (event.schoolId !== undefined && event.studentId !== undefined) {
+    // 'saves data to DynamoDB and then it can be read'
     validate(event, {
       'schoolId': 'string',
       'studentId': 'string',
@@ -52,6 +54,7 @@ exports.handler = (event) => {
       }
     };
   } else if (event.studentLastName !== undefined && event.schoolId === undefined) {
+    // '(extra credit) can query for SchoolStudent records by studentLastName'
     validate(event, {
       'studentLastName': 'string'
     });
@@ -64,6 +67,7 @@ exports.handler = (event) => {
       }
     };
   } else if (event.schoolId !== undefined && event.studentId === undefined) {
+    // 'returns all pages of data'
     validate(event, {
       'schoolId': 'string'
     });
@@ -76,13 +80,13 @@ exports.handler = (event) => {
       Limit: '5',
     };
   } else {
-    console.error('Query missing parameters expected in this scenario');
+    console.error('The query is missing parameters expected in this scenario');
   }
 
   return new Promise((resolve, reject) => {
 
     // defining results array to resolve with. This will be in-scope for all
-    // function calls within this Promise
+    // function calls within this Promise.
     let results = [];
 
     let req = doc_client.query(query_params, function query_callback(err, data)  {

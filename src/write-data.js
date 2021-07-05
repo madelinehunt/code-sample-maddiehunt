@@ -28,8 +28,8 @@ const validate = (event) => {
 
 /**
  * The entry point into the lambda. Validates the event, then writes it to the
- * DB asynchronously. Returns a Promise to fulfill the `await` keywords in
- * the tests.
+ * DB asynchronously.
+ * Returns a Promise to fulfill the `await` keywords in the tests.
  *
  * @param {Object} event
  * @param {string} event.schoolId
