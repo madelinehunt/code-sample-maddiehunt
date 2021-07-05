@@ -29,7 +29,6 @@ const paginator = async (query_result, query_params) => {
   results['Items'] = [];
   results.Items = results.Items.concat(query_result.Items);
 
-  console.log(query_result);
   query_params.ExclusiveStartKey = query_result.LastEvaluatedKey;
 
   return new Promise((resolve, reject) => {
@@ -46,6 +45,7 @@ const paginator = async (query_result, query_params) => {
               resolve(results);
             });
         } else {
+          results.Items = results.Items.concat(data.Items);
           resolve(results);
         }
       }
@@ -111,7 +111,7 @@ exports.handler = (event) => {
   }
 
   return new Promise((resolve, reject) => {
-    let req = doc_client.query(query_params, function query_callback(err, data) {
+    let req = doc_client.query(query_params, (err, data) => {
       if (err) {
         console.error(err);
         reject(err);
