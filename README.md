@@ -1,6 +1,6 @@
-# NWEA code sample test, Nathan Hunt
+# NWEA code sample test, Maddie Hunt
 
-Forked from https://github.com/nwea-platform-team/code-sample-nodejs, code challenge completed by Nathan Hunt on 5 July 2021.
+Forked from https://github.com/nwea-platform-team/code-sample-nodejs, code challenge completed by Maddie Hunt on 5 July 2021.
 
 ## Files added:
 - ````config/config.js```` to store AWS configuration parameters.
